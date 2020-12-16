@@ -31,7 +31,8 @@ int main(){
 		printf("chave atual: %d\n", key);
 		if (input == 'r')
 			raiz = exclui(raiz, key);
-		raiz = insere(raiz, key);
+		else
+			raiz = insere(raiz, key);
 		getchar();
 		scanf("%c", &input);
 		printf("input atual:%c\n", input);

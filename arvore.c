@@ -6,13 +6,6 @@ tNo* exclui_folha(tNo * no){
 
 	printf("excluindo folha\n");
 	
-	tNo* pai = no->pai;
-	if(pai){
-		if (pai->esq == no)
-			pai->esq = NULL;
-		else
-			pai->dir = NULL; 
-	}
 	free(no);
 	return NULL;
 }
@@ -24,6 +17,7 @@ tNo* exclui_1filho(tNo* pai, tNo* filho){
 	printf("excluindo 1 filho\n");
 	aux = pai;
 	pai = filho;
+	pai->pai = aux->pai;
 	free(aux);
 	return pai;
 }
@@ -46,7 +40,12 @@ tNo* exclui_2filhos(tNo* no){
 	
 	tNo* s = sucessor(no);
 	s->esq = no->esq;
-	s->dir = no->dir;
+	//s->dir = no->dir;
+	if (s->pai->dir == s)
+		s->pai->dir = NULL;
+	else
+		s->pai->esq = NULL;
+	s->pai = no->pai;
 	free(no);
 	return s;
 
@@ -88,8 +87,9 @@ tNo* exclui(tNo* no, int chave){
 	if (! no)
 	       return no;	
 	if ( no->chave == chave){
-		if (! (no->esq || no->dir))//Testa se o no nao tem filhos
+		if (! (no->esq || no->dir)){//Testa se o no nao tem filhos
 			return exclui_folha(no);
+		}
 		if (no->esq && no->dir)//Caso 2 filhos
 			return exclui_2filhos(no);
 		if (no->esq)//Apenas filho da esquerda
@@ -104,9 +104,34 @@ tNo* exclui(tNo* no, int chave){
 	return no;
 }
 
-tNo* rotleft(tNo* no);
+tNo* rotleft(tNo* no){
 
-tNo* rotright(tNo* no);
+	tNo* aux;
+	
+	aux = no->dir;
+	no->dir = aux->esq;
+	aux->pai = no->pai;
+	no->pai = aux;
+	if (aux->esq != NULL)
+		aux->esq->pai = no;
+	aux->esq = no;
+	return aux;
+
+}
+
+tNo* rotright(tNo* no){
+
+	tNo* aux;
+
+	aux = no->esq;
+	no->esq = aux->dir;
+	aux->pai = no->pai;
+	no->pai = aux;
+	if (aux->dir != NULL)
+		aux->dir->pai = no;
+	aux->dir = no;
+	return aux;
+}
 
 void imprime(tNo* raiz){
 
@@ -121,4 +146,19 @@ void inorder(tNo* no, int h){
 		printf("%d,%d\n", no->chave, h);
 		inorder(no->dir, h+1);
 	}
+}
+
+int altura(tNo* no){
+
+	if (no){
+		int he, hd;
+
+		he = 1 + altura(no->esq);
+		hd = 1 + altura(no->dir);
+		if (he > hd)
+			return he;
+		return hd;
+
+	}
+	return 0;
 }

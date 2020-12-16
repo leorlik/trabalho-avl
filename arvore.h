@@ -22,10 +22,14 @@ tNo* insere(tNo* no, int chave);
 
 tNo* exclui(tNo* no, int chave);
 
-tNo* rotleft(tNo* no);
+void rotleft(tNo* no);
 
-tNo* rotright(tNo* no);
+void rotright(tNo* no);
+
+int altura(tNo* no);
 
 void imprime(tNo* raiz);
 
 void inorder(tNo* no, int h);
+
+void balanceia(tNo* no);
