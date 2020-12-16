@@ -3,6 +3,7 @@ typedef struct tNo {
 	int chave;
 	struct tNo* esq;
 	struct tNo* dir;
+	struct tNo* pai;
 } tNo;
 
 tNo* exclui_folha(tNo* no);

@@ -5,9 +5,16 @@
 tNo* exclui_folha(tNo * no){
 
 	printf("excluindo folha\n");
+	
+	tNo* pai = no->pai;
+	if(pai){
+		if (pai->esq == no)
+			pai->esq = NULL;
+		else
+			pai->dir = NULL; 
+	}
 	free(no);
-	no = NULL;
-	return no;
+	return NULL;
 }
 
 tNo* exclui_1filho(tNo* pai, tNo* filho){
@@ -51,6 +58,7 @@ tNo* inicia_arvore(int chave){
 	tNo* raiz = (tNo*)malloc(sizeof(tNo));
 	raiz->esq = NULL;
 	raiz->dir = NULL;
+	raiz->pai = NULL;
 	raiz->chave = chave;
 	return raiz;
 }
@@ -64,11 +72,14 @@ tNo* insere(tNo* no, int chave){
 		novo->dir = NULL;
 		return novo;
 	}
-	if (no->chave > chave){
+	if (no->chave > chave)
 		no->esq = insere(no->esq, chave);
-		return no;
-	}
-	no->dir = insere(no->dir, chave);
+	else
+		no->dir = insere(no->dir, chave);
+	if (no->esq)
+		no->esq->pai = no;
+	if (no->dir)
+		no->dir->pai = no;
 	return no;
 }
 
