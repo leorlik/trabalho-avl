@@ -30,9 +30,9 @@ int main(){
 		scanf("%d", &key);
 		printf("chave atual: %d\n", key);
 		if (input == 'r')
-			raiz = exclui(raiz, key);
+			raiz = excluir(raiz, key);
 		else
-			raiz = insere(raiz, key);
+			raiz = inserir(raiz, key);
 		getchar();
 		scanf("%c", &input);
 		printf("input atual:%c\n", input);

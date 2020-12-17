@@ -62,7 +62,23 @@ tNo* inicia_arvore(int chave){
 	return raiz;
 }
 
-tNo* insere(tNo* no, int chave){
+tNo* inserir(tNo* no, int chave){
+
+	tNo* b = NULL;
+
+	no = insere(no, chave, &b);
+	if (b)
+		printf("Chave B: %d\n", b->chave);
+	while(b){
+		balanceia(b);
+		no = b;
+		b = b->pai;
+	}
+
+	return no;
+}
+
+tNo* insere(tNo* no, int chave, tNo** b){
 
 	if( ! no){
 		tNo* novo = (tNo*)malloc(sizeof(tNo));
@@ -71,10 +87,11 @@ tNo* insere(tNo* no, int chave){
 		novo->dir = NULL;
 		return novo;
 	}
+	*b = no;
 	if (no->chave > chave)
-		no->esq = insere(no->esq, chave);
+		no->esq = insere(no->esq, chave, b);
 	else
-		no->dir = insere(no->dir, chave);
+		no->dir = insere(no->dir, chave, b);
 	if (no->esq)
 		no->esq->pai = no;
 	if (no->dir)
@@ -82,7 +99,7 @@ tNo* insere(tNo* no, int chave){
 	return no;
 }
 
-tNo* exclui(tNo* no, int chave){
+tNo* exclui(tNo* no, int chave, tNo** b){
 
 	if (! no)
 	       return no;	
@@ -96,41 +113,85 @@ tNo* exclui(tNo* no, int chave){
 			return exclui_1filho(no, no->esq);
 		return exclui_1filho(no, no->dir);//Apenas filho da direita
 	}
+	*b = no;
 	if (no->chave > chave){
-		no->esq = exclui(no->esq, chave);
+		no->esq = exclui(no->esq, chave, b);
 		return no;
 	}
-	no->dir = exclui(no->dir, chave);
+	no->dir = exclui(no->dir, chave, b);
 	return no;
 }
 
-tNo* rotleft(tNo* no){
+tNo* excluir(tNo* no, int chave){
+
+	tNo* b = NULL;
+	
+	no = exclui(no, chave, &b);
+
+	while (b){
+		balanceia(b);
+		no = b;
+		b = b->pai;
+	}
+
+	return no;
+}
+
+tNo* ajusta_raiz(tNo* no){
+
+	tNo* raiz = no;
+
+	while( raiz->pai)
+		raiz = raiz->pai;
+
+	return raiz;
+}
+
+void rotleft(tNo* no){
 
 	tNo* aux;
+	tNo* pai;
 	
+	pai = no->pai;
+
 	aux = no->dir;
 	no->dir = aux->esq;
 	aux->pai = no->pai;
 	no->pai = aux;
-	if (aux->esq != NULL)
+	if (aux->esq)
 		aux->esq->pai = no;
 	aux->esq = no;
-	return aux;
+
+	if (pai){
+		if (pai->esq == no)
+			pai->esq = aux;
+		else
+			pai->dir = aux;
+	}
 
 }
 
-tNo* rotright(tNo* no){
+void rotright(tNo* no){
 
 	tNo* aux;
+	tNo* pai;
+
+	pai = no->pai;
 
 	aux = no->esq;
 	no->esq = aux->dir;
 	aux->pai = no->pai;
 	no->pai = aux;
-	if (aux->dir != NULL)
+	if (aux->dir)
 		aux->dir->pai = no;
 	aux->dir = no;
-	return aux;
+
+	if (pai){
+		if (pai->esq == no)
+			pai->esq = aux;
+		else
+			pai->dir = aux;
+	}
 }
 
 void imprime(tNo* raiz){
@@ -162,3 +223,38 @@ int altura(tNo* no){
 	}
 	return 0;
 }
+
+void balanceia(tNo* no){
+
+	int he, hd, diff;
+
+	he = altura(no->esq);
+	hd = altura(no->dir);
+
+	diff = he - hd;
+	if (diff > 2){
+		balanceia(no->esq);
+		balanceia(no);
+
+	}
+	else if (diff == 2){
+		rotright(no);
+		if (altura(no->esq) - altura(no->dir) == -2){
+			rotright(no->dir);
+			balanceia(no);
+		}
+	}
+	else if (diff == -2){
+		rotleft(no);
+		if (altura(no->esq) - altura(no->dir) == 2){
+			rotleft(no->esq);
+			balanceia(no);
+		}
+	}
+	else if (diff < -2){
+		balanceia(no->dir);
+		balanceia(no);
+	}
+}
+
+

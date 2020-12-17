@@ -18,9 +18,15 @@ tNo* exclui_2filhos(tNo* no);
 
 tNo* inicia_arvore(int chave);
 
-tNo* insere(tNo* no, int chave);
+tNo* inserir(tNo* no, int chave);
 
-tNo* exclui(tNo* no, int chave);
+tNo* insere(tNo* no, int chave, tNo** b);
+
+tNo* excluir(tNo* no, int chave);
+
+tNo* exclui(tNo* no, int chave, tNo** b);
+
+tNo* ajusta_raiz(tNo* no);
 
 void rotleft(tNo* no);
 
