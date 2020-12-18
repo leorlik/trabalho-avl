@@ -4,7 +4,6 @@
 
 tNo* exclui_folha(tNo * no){
 
-	printf("excluindo folha\n");
 	
 	free(no);
 	return NULL;
@@ -14,7 +13,6 @@ tNo* exclui_1filho(tNo* pai, tNo* filho){
 
 	tNo* aux;
 
-	printf("excluindo 1 filho\n");
 	aux = pai;
 	pai = filho;
 	pai->pai = aux->pai;
@@ -36,15 +34,19 @@ tNo* sucessor(tNo* no){
 
 tNo* exclui_2filhos(tNo* no){
 
-	printf("excluindo 2 filhos\n");
 	
 	tNo* s = sucessor(no);
+	tNo* aux = s->dir;
+
 	s->esq = no->esq;
-	//s->dir = no->dir;
+	if (no->dir != s)
+		s->dir = no->dir;
 	if (s->pai->dir == s)
-		s->pai->dir = NULL;
+		s->pai->dir = aux;
 	else
-		s->pai->esq = NULL;
+		s->pai->esq = aux;
+	if(aux)
+		aux->pai = s->pai;
 	s->pai = no->pai;
 	free(no);
 	return s;
@@ -67,8 +69,6 @@ tNo* inserir(tNo* no, int chave){
 	tNo* b = NULL;
 
 	no = insere(no, chave, &b);
-	if (b)
-		printf("Chave B: %d\n", b->chave);
 	while(b){
 		balanceia(b);
 		no = b;
@@ -104,11 +104,12 @@ tNo* exclui(tNo* no, int chave, tNo** b){
 	if (! no)
 	       return no;	
 	if ( no->chave == chave){
-		if (! (no->esq || no->dir)){//Testa se o no nao tem filhos
+		if (! (no->esq || no->dir))//Testa se o no nao tem filhos
 			return exclui_folha(no);
+		if (no->esq && no->dir){//Caso 2 filhos
+			(*b) = exclui_2filhos(no);
+			return (*b);
 		}
-		if (no->esq && no->dir)//Caso 2 filhos
-			return exclui_2filhos(no);
 		if (no->esq)//Apenas filho da esquerda
 			return exclui_1filho(no, no->esq);
 		return exclui_1filho(no, no->dir);//Apenas filho da direita
@@ -239,16 +240,16 @@ void balanceia(tNo* no){
 	}
 	else if (diff == 2){
 		rotright(no);
-		if (altura(no->esq) - altura(no->dir) == -2){
-			rotright(no->dir);
-			balanceia(no);
+		if (altura(no->pai->esq) - altura(no->pai->dir) == -2){
+			rotright(no);
+			balanceia(no->pai);
 		}
 	}
 	else if (diff == -2){
 		rotleft(no);
-		if (altura(no->esq) - altura(no->dir) == 2){
-			rotleft(no->esq);
-			balanceia(no);
+		if (altura(no->pai->esq) - altura(no->pai->dir) == 2){
+			rotleft(no);
+			balanceia(no->pai);
 		}
 	}
 	else if (diff < -2){

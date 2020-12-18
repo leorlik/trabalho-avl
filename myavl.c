@@ -9,9 +9,7 @@ int main(){
 	int key;
 
 	scanf("%c",&input);
-	printf("primeiro input: %c\n", input);
 	scanf("%d",&key);
-	printf("primeira chave: %d\n", key);
 
 
 	if (input != 'i'){
@@ -23,19 +21,15 @@ int main(){
 
 	getchar();
 	scanf("%c", &input);
-	printf("segundo input:%c\n", input);
-	//getchar();
 
 	while(input == 'r' || input == 'i'){
 		scanf("%d", &key);
-		printf("chave atual: %d\n", key);
 		if (input == 'r')
 			raiz = excluir(raiz, key);
 		else
 			raiz = inserir(raiz, key);
 		getchar();
 		scanf("%c", &input);
-		printf("input atual:%c\n", input);
 	}
 
 	imprime(raiz);
