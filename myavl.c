@@ -19,7 +19,7 @@ int main(){
 
 	raiz = inicia_arvore(key);
 
-	getchar();
+	getchar();//Le o enter
 	scanf("%c", &input);
 
 	while(input == 'r' || input == 'i'){
@@ -28,7 +28,7 @@ int main(){
 			raiz = excluir(raiz, key);
 		else
 			raiz = inserir(raiz, key);
-		getchar();
+		getchar();//Le o enter
 		scanf("%c", &input);
 	}
 
